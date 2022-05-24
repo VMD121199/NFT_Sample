@@ -8,7 +8,7 @@ contract Marketplace is Ownable {
     using Counters for Counters.Counter;
     Counters.Counter private _itemIds;
     mapping(address => bool) private allowedNFT;
-    mapping(uint256 => MarketItem) public martketItem;
+    mapping(uint256 => MarketItem) public marketItem;
 
     event CreateItemSale(
         address _nftAddress,
@@ -56,7 +56,7 @@ contract Marketplace is Ownable {
     ) external {
         require(allowedNFT[_nftAddress], "Only allowed NFT");
         uint256 itemId = _itemIds.current();
-        martketItem[itemId] = (
+        marketItem[itemId] = MarketItem(
             itemId,
             _nftAddress,
             _tokenId,
@@ -74,7 +74,7 @@ contract Marketplace is Ownable {
     }
 
     function buyItem(uint256 _itemId) external payable {
-        MarketItem mki = marketItem[_itemId];
+        MarketItem storage mki = marketItem[_itemId];
         require(msg.sender.balance >= mki.price, "Insufficient balance");
         require(!mki.sold, "Item has been sold");
         require(!mki.isCanceled, "Item has been canceled");
@@ -84,7 +84,7 @@ contract Marketplace is Ownable {
         mki.sold = true;
         mki.timeSold = block.timestamp;
 
-        address(mki.seller).transfer(mki.price);
+        payable(mki.seller).transfer(mki.price);
         IERC721(mki.nftAddress).transferFrom(
             address(this),
             msg.sender,
@@ -100,7 +100,7 @@ contract Marketplace is Ownable {
     }
 
     function cancelSell(uint256 _itemId) external {
-        MarketItem mki = marketItem[_itemId];
+        MarketItem storage mki = marketItem[_itemId];
         require(!mki.sold, "Item has been sold");
         require(!mki.isCanceled, "Item has been cancel");
         require(mki.seller == msg.sender, "Forbiden");
