@@ -23,7 +23,7 @@ contract Marketplace is Ownable {
         address _seller,
         address _buyer
     );
-    event CancelSell(address _nftAddress, uint256 _tokenId);
+    event CancelSell(address _seller, uint256 _itemId);
 
     struct MarketItem {
         uint256 itemId;
@@ -71,5 +71,47 @@ contract Marketplace is Ownable {
         IERC721(_nftAddress).transferFrom(msg.sender, address(this), _tokenId);
         _itemIds.increment();
         emit CreateItemSale(_nftAddress, _tokenId, _price, msg.sender);
+    }
+
+    function buyItem(uint256 _itemId) external payable {
+        MarketItem mki = marketItem[_itemId];
+        require(msg.sender.balance >= mki.price, "Insufficient balance");
+        require(!mki.sold, "Item has been sold");
+        require(!mki.isCanceled, "Item has been canceled");
+        require(mki.seller != msg.sender, "Item has been canceled");
+
+        mki.buyer = msg.sender;
+        mki.sold = true;
+        mki.timeSold = block.timestamp;
+
+        address(mki.seller).transfer(mki.price);
+        IERC721(mki.nftAddress).transferFrom(
+            address(this),
+            msg.sender,
+            mki.tokenId
+        );
+        emit BuyItem(
+            mki.nftAddress,
+            mki.tokenId,
+            mki.price,
+            mki.seller,
+            mki.buyer
+        );
+    }
+
+    function cancelSell(uint256 _itemId) external {
+        MarketItem mki = marketItem[_itemId];
+        require(!mki.sold, "Item has been sold");
+        require(!mki.isCanceled, "Item has been cancel");
+        require(mki.seller == msg.sender, "Forbiden");
+
+        mki.isCanceled = true;
+
+        IERC721(mki.nftAddress).transferFrom(
+            address(this),
+            msg.sender,
+            mki.tokenId
+        );
+        emit CancelSell(msg.sender, mki.itemId);
     }
 }
