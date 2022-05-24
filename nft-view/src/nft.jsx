@@ -201,6 +201,7 @@ const NFT721 = () => {
           <button onClick={() => handleCreateMarket(nftContract.address, document.getElementById('tokenId').value, document.getElementById('price').value)}>Sell</button>
         </div>
         <br></br>
+        <div>================================</div>
         <div>
           <div>
             Item ID:<input type="text" id="itemId-unsell"/>
@@ -208,6 +209,7 @@ const NFT721 = () => {
           <button onClick={() => handleCancelMarket(document.getElementById('itemId-unsell').value)}>UnSell</button>
         </div>
         <br></br>
+        <div>================================</div>
         <div>
           <div>
             Item ID:<input type="text" id="itemId-buy"/>
