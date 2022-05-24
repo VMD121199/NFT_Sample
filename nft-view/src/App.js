@@ -1,18 +1,20 @@
-import logo from "./logo.svg";
+
 import "./App.css";
-import React, { Component } from "react";
+import React, { Fragment } from "react";
 
-import { Route } from "react-router-dom";
+import { Route, BrowserRouter,Routes } from "react-router-dom";
 
-import NFT721 from "./nft";
-class App extends Component {
-  render() {
+import NFT from "./nft";
+function App() {
     return (
-      <div>
-        <Route exact path="/" component={NFT721} />
-      </div>
+      <BrowserRouter>
+        <Fragment>
+          <Routes>
+            <Route path="/" element={<NFT />} />
+          </Routes>
+        </Fragment>
+      </BrowserRouter>
     );
-  }
 }
 
 export default App;
