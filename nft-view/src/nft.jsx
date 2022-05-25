@@ -125,12 +125,18 @@ const NFT721 = () => {
           marketContract,
           address: configData.Marketplace_Address,
         });
-        var myNFT = await nftContract.methods
-          .getMyNFTs()
-          .call({ from: String(address) });
+        var totalNFT = await nftContract.methods.getTotalNFT().call();
+        var myNFT = [];
+        for (let i = 0; i < totalNFT; i++) {
+          if (
+            (await nftContract.methods.ownerOf(i).call()).toLowerCase() ==
+            address
+          ) {
+            myNFT.push(i);
+          }
+        }
         setMyNFT({ myNFT });
         var marketItems = await marketContract.methods.getMarketItems().call();
-        console.log(marketItems);
         setMarketItems({ marketItems });
       }
     }
@@ -316,9 +322,11 @@ const NFT721 = () => {
           </button>
           <p>List token in Market:</p>
           <table>
-            {marketItems.marketItems.map((id) => (
-              <tb>{id.tokenId} </tb>
-            ))}
+            {marketItems.marketItems
+              .filter((item) => item.isSold == false && item.isCanceld == false)
+              .map((id) => (
+                <tb>{id.itemId}</tb>
+              ))}
           </table>
         </div>
       </div>
