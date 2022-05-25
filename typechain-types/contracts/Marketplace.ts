@@ -27,11 +27,52 @@ import type {
   OnEvent,
 } from "../common";
 
+export declare namespace Marketplace {
+  export type MarketItemStruct = {
+    itemId: BigNumberish;
+    nftAddress: string;
+    tokenId: BigNumberish;
+    seller: string;
+    buyer: string;
+    price: BigNumberish;
+    sold: boolean;
+    isCanceled: boolean;
+    timeCreated: BigNumberish;
+    timeSold: BigNumberish;
+  };
+
+  export type MarketItemStructOutput = [
+    BigNumber,
+    string,
+    BigNumber,
+    string,
+    string,
+    BigNumber,
+    boolean,
+    boolean,
+    BigNumber,
+    BigNumber
+  ] & {
+    itemId: BigNumber;
+    nftAddress: string;
+    tokenId: BigNumber;
+    seller: string;
+    buyer: string;
+    price: BigNumber;
+    sold: boolean;
+    isCanceled: boolean;
+    timeCreated: BigNumber;
+    timeSold: BigNumber;
+  };
+}
+
 export interface MarketplaceInterface extends utils.Interface {
   functions: {
     "buyItem(uint256)": FunctionFragment;
     "cancelSell(uint256)": FunctionFragment;
     "createMarketItem(address,uint256,uint256)": FunctionFragment;
+    "getMarketItem(uint256)": FunctionFragment;
+    "getMarketItems()": FunctionFragment;
     "marketItem(uint256)": FunctionFragment;
     "owner()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
@@ -44,6 +85,8 @@ export interface MarketplaceInterface extends utils.Interface {
       | "buyItem"
       | "cancelSell"
       | "createMarketItem"
+      | "getMarketItem"
+      | "getMarketItems"
       | "marketItem"
       | "owner"
       | "renounceOwnership"
@@ -62,6 +105,14 @@ export interface MarketplaceInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "createMarketItem",
     values: [string, BigNumberish, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getMarketItem",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getMarketItems",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "marketItem",
@@ -85,6 +136,14 @@ export interface MarketplaceInterface extends utils.Interface {
   decodeFunctionResult(functionFragment: "cancelSell", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "createMarketItem",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getMarketItem",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getMarketItems",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "marketItem", data: BytesLike): Result;
@@ -209,6 +268,15 @@ export interface Marketplace extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    getMarketItem(
+      itemId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[Marketplace.MarketItemStructOutput]>;
+
+    getMarketItems(
+      overrides?: CallOverrides
+    ): Promise<[Marketplace.MarketItemStructOutput[]]>;
+
     marketItem(
       arg0: BigNumberish,
       overrides?: CallOverrides
@@ -273,6 +341,15 @@ export interface Marketplace extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  getMarketItem(
+    itemId: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<Marketplace.MarketItemStructOutput>;
+
+  getMarketItems(
+    overrides?: CallOverrides
+  ): Promise<Marketplace.MarketItemStructOutput[]>;
+
   marketItem(
     arg0: BigNumberish,
     overrides?: CallOverrides
@@ -330,6 +407,15 @@ export interface Marketplace extends BaseContract {
       _price: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    getMarketItem(
+      itemId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<Marketplace.MarketItemStructOutput>;
+
+    getMarketItems(
+      overrides?: CallOverrides
+    ): Promise<Marketplace.MarketItemStructOutput[]>;
 
     marketItem(
       arg0: BigNumberish,
@@ -439,6 +525,13 @@ export interface Marketplace extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    getMarketItem(
+      itemId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getMarketItems(overrides?: CallOverrides): Promise<BigNumber>;
+
     marketItem(
       arg0: BigNumberish,
       overrides?: CallOverrides
@@ -479,6 +572,13 @@ export interface Marketplace extends BaseContract {
       _price: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
+
+    getMarketItem(
+      itemId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getMarketItems(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     marketItem(
       arg0: BigNumberish,
