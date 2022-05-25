@@ -33,6 +33,7 @@ const NFT721 = () => {
         }
       });
       await loadDataBlockchain();
+      console.log(myNFT.myNFT);
     }
   }, []);
 
@@ -180,6 +181,10 @@ const NFT721 = () => {
       const txid = await nftContract.nftContract.methods
         .createNFT(uri)
         .send({ from: String(account.address) });
+      var myNFT = await nftContract.nftContract.methods
+        .getMyNFTs()
+        .call({ from: String(account.address) });
+      setMyNFT({ myNFT });
     }
   };
 
@@ -231,7 +236,9 @@ const NFT721 = () => {
         <div>
           <h1>My NFT</h1>
           List Token ID:
-          {myNFT.myNFT}
+          {myNFT.myNFT.map((id) => (
+            <a>{id} </a>
+          ))}
         </div>
       ) : (
         ""
