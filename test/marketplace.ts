@@ -8,6 +8,8 @@ describe("NFT721", () => {
   let nft721: NFT721;
   let nft721b: NFT721;
   let marketplace: Marketplace;
+  let uri =
+    "https://gateway.pinata.cloud/ipfs/QmdHgdy2sZ6wCVjtXUfLjW6S6LdmZWeWxdn1RtVeWHGcup";
   beforeEach(async () => {
     [admin, user1] = await ethers.getSigners();
     const nft = await ethers.getContractFactory("NFT721");
@@ -26,9 +28,6 @@ describe("NFT721", () => {
 
   describe("marketplace", () => {
     beforeEach(async () => {
-      let uri =
-        "https://gateway.pinata.cloud/ipfs/QmdHgdy2sZ6wCVjtXUfLjW6S6LdmZWeWxdn1RtVeWHGcup";
-
       console.log(marketplace.address);
       await expect(await nft721.connect(user1).createNFT(uri));
       await nft721.connect(user1).approve(marketplace.address, 0);
@@ -91,6 +90,19 @@ describe("NFT721", () => {
           .connect(user1)
           .buyItem(0, { value: (await marketplace.getMarketItem(0)).price })
       ).to.be.revertedWith("Can't buy from yourself");
+    });
+
+    it("Only token owner can create item", async () => {
+      await await nft721.connect(user1).createNFT(uri);
+      await expect(
+        marketplace.connect(admin).createMarketItem(nft721.address, 1, 1000)
+      ).to.be.revertedWith("Only token owner");
+    });
+
+    it("nonexistent token", async () => {
+      await expect(
+        marketplace.connect(admin).createMarketItem(nft721.address, 2, 1000)
+      ).to.be.revertedWith("ERC721: owner query for nonexistent token");
     });
   });
 });

@@ -56,6 +56,10 @@ contract Marketplace is Ownable {
         uint256 _price
     ) external {
         require(allowedNFT[_nftAddress], "Only allowed NFT");
+        require(
+            IERC721(_nftAddress).ownerOf(_tokenId) == msg.sender,
+            "Only token owner"
+        );
         uint256 itemId = _itemIds.current();
         marketItem[itemId] = MarketItem(
             itemId,

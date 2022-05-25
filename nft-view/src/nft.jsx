@@ -7,6 +7,7 @@ const NFT721 = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [account, setAccount] = useState({ address: null, isConnect: false });
   const [myNFT, setMyNFT] = useState({ myNFT: [] });
+  const [marketItems, setMarketItems] = useState({ marketItems: [] });
   const [nftContract, setNFTContract] = useState({
     nftContract: null,
     address: false,
@@ -128,6 +129,9 @@ const NFT721 = () => {
           .getMyNFTs()
           .call({ from: String(address) });
         setMyNFT({ myNFT });
+        var marketItems = await marketContract.methods.getMarketItems().call();
+        console.log(marketItems);
+        setMarketItems({ marketItems });
       }
     }
   };
@@ -310,6 +314,12 @@ const NFT721 = () => {
           >
             Buy
           </button>
+          <p>List token in Market:</p>
+          <table>
+            {marketItems.marketItems.map((id) => (
+              <tb>{id.tokenId} </tb>
+            ))}
+          </table>
         </div>
       </div>
     </div>
