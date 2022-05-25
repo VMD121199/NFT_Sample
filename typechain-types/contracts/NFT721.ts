@@ -28,12 +28,11 @@ import type {
 
 export interface NFT721Interface extends utils.Interface {
   functions: {
-    "addressToTokens(address,uint256)": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "createNFT(string)": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
-    "getMyNFTs()": FunctionFragment;
+    "getTotalNFT()": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "name()": FunctionFragment;
     "owner()": FunctionFragment;
@@ -51,12 +50,11 @@ export interface NFT721Interface extends utils.Interface {
 
   getFunction(
     nameOrSignatureOrTopic:
-      | "addressToTokens"
       | "approve"
       | "balanceOf"
       | "createNFT"
       | "getApproved"
-      | "getMyNFTs"
+      | "getTotalNFT"
       | "isApprovedForAll"
       | "name"
       | "owner"
@@ -73,10 +71,6 @@ export interface NFT721Interface extends utils.Interface {
   ): FunctionFragment;
 
   encodeFunctionData(
-    functionFragment: "addressToTokens",
-    values: [string, BigNumberish]
-  ): string;
-  encodeFunctionData(
     functionFragment: "approve",
     values: [string, BigNumberish]
   ): string;
@@ -86,7 +80,10 @@ export interface NFT721Interface extends utils.Interface {
     functionFragment: "getApproved",
     values: [BigNumberish]
   ): string;
-  encodeFunctionData(functionFragment: "getMyNFTs", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "getTotalNFT",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "isApprovedForAll",
     values: [string, string]
@@ -131,10 +128,6 @@ export interface NFT721Interface extends utils.Interface {
     values: [string]
   ): string;
 
-  decodeFunctionResult(
-    functionFragment: "addressToTokens",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "createNFT", data: BytesLike): Result;
@@ -142,7 +135,10 @@ export interface NFT721Interface extends utils.Interface {
     functionFragment: "getApproved",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "getMyNFTs", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getTotalNFT",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "isApprovedForAll",
     data: BytesLike
@@ -269,12 +265,6 @@ export interface NFT721 extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
-    addressToTokens(
-      arg0: string,
-      arg1: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber]>;
-
     approve(
       to: string,
       tokenId: BigNumberish,
@@ -293,7 +283,7 @@ export interface NFT721 extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string]>;
 
-    getMyNFTs(overrides?: CallOverrides): Promise<[BigNumber[]]>;
+    getTotalNFT(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     isApprovedForAll(
       owner: string,
@@ -360,12 +350,6 @@ export interface NFT721 extends BaseContract {
     ): Promise<ContractTransaction>;
   };
 
-  addressToTokens(
-    arg0: string,
-    arg1: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
   approve(
     to: string,
     tokenId: BigNumberish,
@@ -384,7 +368,7 @@ export interface NFT721 extends BaseContract {
     overrides?: CallOverrides
   ): Promise<string>;
 
-  getMyNFTs(overrides?: CallOverrides): Promise<BigNumber[]>;
+  getTotalNFT(overrides?: CallOverrides): Promise<BigNumber>;
 
   isApprovedForAll(
     owner: string,
@@ -445,12 +429,6 @@ export interface NFT721 extends BaseContract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
-    addressToTokens(
-      arg0: string,
-      arg1: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     approve(
       to: string,
       tokenId: BigNumberish,
@@ -466,7 +444,7 @@ export interface NFT721 extends BaseContract {
       overrides?: CallOverrides
     ): Promise<string>;
 
-    getMyNFTs(overrides?: CallOverrides): Promise<BigNumber[]>;
+    getTotalNFT(overrides?: CallOverrides): Promise<BigNumber>;
 
     isApprovedForAll(
       owner: string,
@@ -570,12 +548,6 @@ export interface NFT721 extends BaseContract {
   };
 
   estimateGas: {
-    addressToTokens(
-      arg0: string,
-      arg1: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     approve(
       to: string,
       tokenId: BigNumberish,
@@ -594,7 +566,7 @@ export interface NFT721 extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getMyNFTs(overrides?: CallOverrides): Promise<BigNumber>;
+    getTotalNFT(overrides?: CallOverrides): Promise<BigNumber>;
 
     isApprovedForAll(
       owner: string,
@@ -662,12 +634,6 @@ export interface NFT721 extends BaseContract {
   };
 
   populateTransaction: {
-    addressToTokens(
-      arg0: string,
-      arg1: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     approve(
       to: string,
       tokenId: BigNumberish,
@@ -689,7 +655,7 @@ export interface NFT721 extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    getMyNFTs(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    getTotalNFT(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     isApprovedForAll(
       owner: string,

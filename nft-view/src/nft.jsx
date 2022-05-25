@@ -7,6 +7,7 @@ const NFT721 = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [account, setAccount] = useState({ address: null, isConnect: false });
   const [myNFT, setMyNFT] = useState({ myNFT: [] });
+  const [marketItems, setMarketItems] = useState({ marketItems: [] });
   const [nftContract, setNFTContract] = useState({
     nftContract: null,
     address: false,
@@ -124,10 +125,19 @@ const NFT721 = () => {
           marketContract,
           address: configData.Marketplace_Address,
         });
-        var myNFT = await nftContract.methods
-          .getMyNFTs()
-          .call({ from: String(address) });
+        var totalNFT = await nftContract.methods.getTotalNFT().call();
+        var myNFT = [];
+        for (let i = 0; i < totalNFT; i++) {
+          if (
+            (await nftContract.methods.ownerOf(i).call()).toLowerCase() ==
+            address
+          ) {
+            myNFT.push(i);
+          }
+        }
         setMyNFT({ myNFT });
+        var marketItems = await marketContract.methods.getMarketItems().call();
+        setMarketItems({ marketItems });
       }
     }
   };
@@ -310,6 +320,14 @@ const NFT721 = () => {
           >
             Buy
           </button>
+          <p>List token in Market:</p>
+          <table>
+            {marketItems.marketItems
+              .filter((item) => item.isSold == false && item.isCanceld == false)
+              .map((id) => (
+                <tb>{id.itemId}</tb>
+              ))}
+          </table>
         </div>
       </div>
     </div>
