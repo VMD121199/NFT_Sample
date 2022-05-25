@@ -11,11 +11,13 @@ const NFT721 = () => {
     nftContract: null,
     address: false,
   });
+
   const [marketContract, setMarketContract] = useState({
     marketContract: null,
     address: false,
   });
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(async () => {
     if (window.ethereum) {
       window.web3 = new Web3(window.ethereum);
@@ -31,7 +33,6 @@ const NFT721 = () => {
         }
       });
       await loadDataBlockchain();
-      await getMyNFT();
     }
   }, []);
 
@@ -108,19 +109,24 @@ const NFT721 = () => {
           method: "eth_requestAccounts",
         });
         setAccount({ address, isConnect: true });
-        const nftContract = await new eth.Contract(
+        const nftContract = new eth.Contract(
           IERC721.abi,
           configData.NFT721_Address
         );
-        const marketContract = await new eth.Contract(
+        const marketContract = new eth.Contract(
           MarketABI.abi,
           configData.Marketplace_Address
         );
+        console.log("nftContract", nftContract);
         setNFTContract({ nftContract, address: configData.NFT721_Address });
         setMarketContract({
           marketContract,
           address: configData.Marketplace_Address,
         });
+        var myNFT = await nftContract.methods
+          .getMyNFTs()
+          .call({ from: String(address) });
+        setMyNFT({ myNFT });
       }
     }
   };
@@ -213,18 +219,6 @@ const NFT721 = () => {
     }
   };
 
-  const getMyNFT = async () => {
-    console.log(nftContract);
-    if (nftContract.nftContract != null) {
-      console.log(nftContract);
-      var myNFT = await nftContract.nftContract.methods
-        .getMyNFTs()
-        .call({ from: account.address });
-      console.log(myNFT);
-      setMyNFT(myNFT);
-    }
-  };
-
   return (
     <div>
       {!account.isConnect ? (
@@ -233,11 +227,16 @@ const NFT721 = () => {
         <button onClick={() => disConnect()}>Disconnect</button>
       )}
       <div>{account.address}</div>
-      <div>
-        <h1>My NFT</h1>
-        Token ID list:
-        {myNFT.myNFT}
-      </div>
+      {myNFT.myNFT.length > 0 ? (
+        <div>
+          <h1>My NFT</h1>
+          List Token ID:
+          {myNFT.myNFT}
+        </div>
+      ) : (
+        ""
+      )}
+
       <div>
         <h1>NFT</h1>
         URI:
