@@ -16,7 +16,7 @@ const NFT721 = () => {
     address: false,
   });
 
-  useEffect(() => {
+  useEffect(async () => {
     if (window.ethereum) {
       window.web3 = new Web3(window.ethereum);
       window.ethereum.on("accountsChanged", async function () {
@@ -30,6 +30,8 @@ const NFT721 = () => {
           await loadDataBlockchain();
         }
       });
+      await loadDataBlockchain();
+      await getMyNFT();
     }
   }, []);
 
@@ -114,7 +116,6 @@ const NFT721 = () => {
           MarketABI.abi,
           configData.Marketplace_Address
         );
-        console.log(marketContract);
         setNFTContract({ nftContract, address: configData.NFT721_Address });
         setMarketContract({
           marketContract,
@@ -217,8 +218,9 @@ const NFT721 = () => {
     if (nftContract.nftContract != null) {
       console.log(nftContract);
       var myNFT = await nftContract.nftContract.methods
-        .addressToTokens(account)
-        .call();
+        .getMyNFTs()
+        .call({ from: account.address });
+      console.log(myNFT);
       setMyNFT(myNFT);
     }
   };
@@ -234,7 +236,7 @@ const NFT721 = () => {
       <div>
         <h1>My NFT</h1>
         Token ID list:
-        {}
+        {myNFT.myNFT}
       </div>
       <div>
         <h1>NFT</h1>

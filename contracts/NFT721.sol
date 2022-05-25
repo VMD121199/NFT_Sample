@@ -19,4 +19,8 @@ contract NFT721 is ERC721URIStorage, Ownable {
         addressToTokens[msg.sender].push(tokenId);
         _itemIds.increment();
     }
+
+    function getMyNFTs() external view returns (uint256[] memory) {
+        return addressToTokens[msg.sender];
+    }
 }
