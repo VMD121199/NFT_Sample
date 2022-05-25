@@ -148,6 +148,8 @@ const NFT721 = () => {
         var myBalance = await tokenContract.methods
           .balanceOf(address[0])
           .call();
+        myBalance = window.web3.utils.fromWei(String(myBalance));
+
         setMyBalance({ myBalance });
         console.log(myBalance);
         var marketItems = await marketContract.methods.getMarketItems().call();
@@ -248,10 +250,9 @@ const NFT721 = () => {
       ) {
         let max_int256 =
           "115792089237316195423570985008687907853269984665640564039457584007913129639935";
-        await tokenContract.tokenContract.methods.approve(
-          marketContract.address,
-          max_int256
-        );
+        await tokenContract.tokenContract.methods
+          .approve(marketContract.address, max_int256)
+          .send({ from: String(account.address) });
       }
       await marketContract.marketContract.methods.buyItem(itemId).send({
         from: String(account.address),
@@ -274,6 +275,8 @@ const NFT721 = () => {
           {myNFT.myNFT.map((id) => (
             <a>{id} </a>
           ))}
+          <br />
+          TOKEN ERC20 Balance: {myTokenBalance.myBalance}
         </div>
       ) : (
         ""
