@@ -77,6 +77,7 @@ export interface MarketplaceInterface extends utils.Interface {
     "owner()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "setAllowedNFT(address,bool)": FunctionFragment;
+    "tokenBase()": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
   };
 
@@ -91,6 +92,7 @@ export interface MarketplaceInterface extends utils.Interface {
       | "owner"
       | "renounceOwnership"
       | "setAllowedNFT"
+      | "tokenBase"
       | "transferOwnership"
   ): FunctionFragment;
 
@@ -127,6 +129,7 @@ export interface MarketplaceInterface extends utils.Interface {
     functionFragment: "setAllowedNFT",
     values: [string, boolean]
   ): string;
+  encodeFunctionData(functionFragment: "tokenBase", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "transferOwnership",
     values: [string]
@@ -156,6 +159,7 @@ export interface MarketplaceInterface extends utils.Interface {
     functionFragment: "setAllowedNFT",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "tokenBase", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "transferOwnership",
     data: BytesLike
@@ -318,6 +322,8 @@ export interface Marketplace extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    tokenBase(overrides?: CallOverrides): Promise<[string]>;
+
     transferOwnership(
       newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -391,6 +397,8 @@ export interface Marketplace extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  tokenBase(overrides?: CallOverrides): Promise<string>;
+
   transferOwnership(
     newOwner: string,
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -455,6 +463,8 @@ export interface Marketplace extends BaseContract {
       _license: boolean,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    tokenBase(overrides?: CallOverrides): Promise<string>;
 
     transferOwnership(
       newOwner: string,
@@ -549,6 +559,8 @@ export interface Marketplace extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    tokenBase(overrides?: CallOverrides): Promise<BigNumber>;
+
     transferOwnership(
       newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -596,6 +608,8 @@ export interface Marketplace extends BaseContract {
       _license: boolean,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
+
+    tokenBase(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     transferOwnership(
       newOwner: string,

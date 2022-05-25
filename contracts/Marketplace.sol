@@ -2,6 +2,7 @@ pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract Marketplace is Ownable {
@@ -10,6 +11,8 @@ contract Marketplace is Ownable {
     Counters.Counter private _itemsSold;
     mapping(address => bool) private allowedNFT;
     mapping(uint256 => MarketItem) public marketItem;
+
+    address public tokenBase;
 
     event CreateItemSale(
         address _nftAddress,
@@ -39,8 +42,9 @@ contract Marketplace is Ownable {
         uint256 timeSold;
     }
 
-    constructor(address _allowedNFT) {
+    constructor(address _allowedNFT, address _tokenAddress) {
         allowedNFT[_allowedNFT] = true;
+        tokenBase = _tokenAddress;
     }
 
     function setAllowedNFT(address _nftAddress, bool _license)
@@ -80,13 +84,15 @@ contract Marketplace is Ownable {
 
     function buyItem(uint256 _itemId) external payable {
         MarketItem storage mki = marketItem[_itemId];
-        require(msg.sender.balance >= mki.price, "Insufficient balance");
-        require(msg.value >= mki.price, "Not enough to pay");
+        require(
+            IERC20(tokenBase).balanceOf(msg.sender) >= mki.price,
+            "Insufficient balance"
+        );
         require(!mki.sold, "Item has been sold");
         require(!mki.isCanceled, "Item has been canceled");
         require(mki.seller != msg.sender, "Can't buy from yourself");
 
-        payable(mki.seller).transfer(mki.price);
+        IERC20(tokenBase).transferFrom(msg.sender, mki.seller, mki.price);
         IERC721(mki.nftAddress).transferFrom(
             address(this),
             msg.sender,
