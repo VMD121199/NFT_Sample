@@ -7,6 +7,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 contract Marketplace is Ownable {
     using Counters for Counters.Counter;
     Counters.Counter private _itemIds;
+    Counters.Counter private _itemsSold;
     mapping(address => bool) private allowedNFT;
     mapping(uint256 => MarketItem) public marketItem;
 
@@ -90,6 +91,7 @@ contract Marketplace is Ownable {
             msg.sender,
             mki.tokenId
         );
+        _itemsSold.increment();
         emit BuyItem(
             mki.nftAddress,
             mki.tokenId,
@@ -113,5 +115,29 @@ contract Marketplace is Ownable {
             mki.tokenId
         );
         emit CancelSell(msg.sender, mki.itemId);
+    }
+
+    function getMarketItems() external view returns (MarketItem[] memory) {
+        uint256 itemCount = _itemIds.current();
+        uint256 unsoldItemCount = _itemIds.current() - _itemsSold.current();
+        uint256 currentIndex = 0;
+        MarketItem[] memory items = new MarketItem[](unsoldItemCount);
+
+        for (uint256 i = 0; i < itemCount; i++) {
+            if (marketItem[i].buyer == address(0)) {
+                MarketItem storage currentItem = marketItem[i];
+                items[currentIndex] = currentItem;
+                currentIndex += 1;
+            }
+        }
+        return items;
+    }
+
+    function getMarketItem(uint256 itemId)
+        external
+        view
+        returns (MarketItem memory)
+    {
+        return marketItem[itemId];
     }
 }
