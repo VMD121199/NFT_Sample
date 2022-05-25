@@ -40,7 +40,7 @@ contract Marketplace is Ownable {
     }
 
     constructor(address _allowedNFT) {
-        allowedNFT[_allowedNFT];
+        allowedNFT[_allowedNFT] = true;
     }
 
     function setAllowedNFT(address _nftAddress, bool _license)
@@ -77,13 +77,10 @@ contract Marketplace is Ownable {
     function buyItem(uint256 _itemId) external payable {
         MarketItem storage mki = marketItem[_itemId];
         require(msg.sender.balance >= mki.price, "Insufficient balance");
+        require(msg.value >= mki.price, "Not enough to pay");
         require(!mki.sold, "Item has been sold");
         require(!mki.isCanceled, "Item has been canceled");
-        require(mki.seller != msg.sender, "Item has been canceled");
-
-        mki.buyer = msg.sender;
-        mki.sold = true;
-        mki.timeSold = block.timestamp;
+        require(mki.seller != msg.sender, "Can't buy from yourself");
 
         payable(mki.seller).transfer(mki.price);
         IERC721(mki.nftAddress).transferFrom(
@@ -91,6 +88,9 @@ contract Marketplace is Ownable {
             msg.sender,
             mki.tokenId
         );
+        mki.buyer = msg.sender;
+        mki.sold = true;
+        mki.timeSold = block.timestamp;
         _itemsSold.increment();
         emit BuyItem(
             mki.nftAddress,
