@@ -153,6 +153,7 @@ const NFT721 = () => {
         setMyBalance({ myBalance });
         console.log(myBalance);
         var marketItems = await marketContract.methods.getMarketItems().call();
+        console.log(marketItems);
         setMarketItems({ marketItems });
       }
     }
@@ -272,16 +273,15 @@ const NFT721 = () => {
         <div>
           <h1>My NFT</h1>
           List Token ID:
-          {myNFT.myNFT.map((id) => (
-            <a>{id} </a>
+          {myNFT.myNFT.map((item) => (
+            <a>{item} </a>
           ))}
           <br />
-          TOKEN ERC20 Balance: {myTokenBalance.myBalance}
         </div>
       ) : (
         ""
       )}
-
+      TOKEN ERC20 Balance: {myTokenBalance.myBalance}
       <div>
         <h1>NFT</h1>
         URI:
@@ -349,11 +349,22 @@ const NFT721 = () => {
             Buy
           </button>
           <p>List token in Market:</p>
-          <table>
+          <table border="2px">
+            <tr>
+              <th>Item ID</th>
+              <th>Address NFT</th>
+              <th>Token ID</th>
+              <th>Price</th>
+            </tr>
             {marketItems.marketItems
-              .filter((item) => item.isSold == false && item.isCanceld == false)
+              .filter((item) => item.sold == false && item.isCanceled == false)
               .map((id) => (
-                <tb>{id.itemId}</tb>
+                <tr>
+                  <th>{id.itemId}</th>
+                  <th>{id.nftAddress}</th>
+                  <th>{id.tokenId}</th>
+                  <th>{window.web3.utils.fromWei(String(id.price))}</th>
+                </tr>
               ))}
           </table>
         </div>
