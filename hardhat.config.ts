@@ -21,6 +21,18 @@ const config: HardhatUserConfig = {
       gasPrice: 1000000001,
       timeout: 20000,
     },
+    bscTestnet: {
+      url: "https://data-seed-prebsc-1-s1.binance.org:8545",
+      chainId: 97,
+      gasPrice: 20000000000,
+      accounts: {mnemonic: mnemonic}
+    },
+    bscMainnet: {
+      url: "https://bsc-dataseed.binance.org/",
+      chainId: 56,
+      gasPrice: 20000000000,
+      accounts: {mnemonic: mnemonic}
+    }
   },
   solidity: {
     compilers: [
