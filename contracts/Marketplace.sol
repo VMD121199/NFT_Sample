@@ -92,15 +92,17 @@ contract Marketplace is Ownable {
         require(!mki.isCanceled, "Item has been canceled");
         require(mki.seller != msg.sender, "Can't buy from yourself");
 
+        mki.buyer = msg.sender;
+        mki.sold = true;
+        mki.timeSold = block.timestamp;
+
         IERC20(tokenBase).transferFrom(msg.sender, mki.seller, mki.price);
         IERC721(mki.nftAddress).transferFrom(
             address(this),
             msg.sender,
             mki.tokenId
         );
-        mki.buyer = msg.sender;
-        mki.sold = true;
-        mki.timeSold = block.timestamp;
+
         _itemsSold.increment();
         emit BuyItem(
             mki.nftAddress,
